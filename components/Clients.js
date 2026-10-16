@@ -12,6 +12,11 @@ export default function Clients({ initial = null }) {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(initial);
   const [msg, setMsg] = useState('');
+  const [calUrl, setCalUrl] = useState('');
+
+  useEffect(() => {
+    supabase.from('settings').select('cal_url').eq('id', 1).maybeSingle().then(({ data }) => setCalUrl(data?.cal_url || ''));
+  }, []);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('clients').select('*').order('name');
@@ -41,7 +46,7 @@ export default function Clients({ initial = null }) {
       {due.length > 0 && (
         <>
           <h3>À relancer ({due.length})</h3>
-          {due.map((c) => <Relance key={c.id} c={c} onOpen={() => setOpen(c.id)} />)}
+          {due.map((c) => <Relance key={c.id} c={c} calUrl={calUrl} onOpen={() => setOpen(c.id)} />)}
         </>
       )}
       <h3>Mes clients</h3>
@@ -63,8 +68,8 @@ export default function Clients({ initial = null }) {
   );
 }
 
-function Relance({ c, onOpen }) {
-  const text = relanceMessage(c);
+function Relance({ c, calUrl, onOpen }) {
+  const text = relanceMessage(c, calUrl);
   const mail = c.email
     ? `mailto:${c.email}?subject=${encodeURIComponent('Un petit coucou')}&body=${encodeURIComponent(text)}`
     : null;

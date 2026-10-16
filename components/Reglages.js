@@ -53,6 +53,7 @@ export default function Reglages({ part = 'design' }) {
       price_eur: num(r.price_eur),
       deposit_eur: num(r.deposit_eur),
       active: r.active,
+      booking_url: r.booking_url || '',
     }).eq('id', r.id);
     setMsg(error ? 'Échec de l’enregistrement.' : `« ${r.name} » enregistré.`);
   }
@@ -82,6 +83,7 @@ export default function Reglages({ part = 'design' }) {
       bg_image_url: set.bg_image_url || '', bg_video_url: set.bg_video_url || '',
       bg_dim: parseInt(set.bg_dim, 10) || 0,
       title_effect: set.title_effect || 'none',
+      address: set.address || '', instagram_url: set.instagram_url || '',
       title_font: set.title_font || '',
     }).eq('id', 1);
     if (!error) saved.current = { ...set };
@@ -118,6 +120,9 @@ export default function Reglages({ part = 'design' }) {
           </label>
           <label>Description
             <input value={r.description} onChange={(e) => edit(r.id, 'description', e.target.value)} />
+          </label>
+          <label>Lien direct de réservation (facultatif)
+            <input placeholder="Ex : https://cal.com/ton-nom/coupe-classique" value={r.booking_url || ''} onChange={(e) => edit(r.id, 'booking_url', e.target.value)} />
           </label>
           <div className="g3">
             <label>Prix (€)
@@ -219,6 +224,12 @@ export default function Reglages({ part = 'design' }) {
             {set.bg_video_url && <button className="lk danger" onClick={() => up('bg_video_url', '')}>Retirer la vidéo</button>}
             <label>Voile sombre sur le fond : {set.bg_dim ?? 55} %
               <input type="range" min="0" max="90" value={set.bg_dim ?? 55} onChange={(e) => up('bg_dim', e.target.value)} />
+            </label>
+            <label>Adresse du salon (affichée avec un bouton Itinéraire)
+              <input placeholder="Ex : Rue Saint-Gilles 12, 4000 Liège" value={set.address || ''} onChange={(e) => up('address', e.target.value)} />
+            </label>
+            <label>Lien Instagram (facultatif)
+              <input placeholder="https://instagram.com/ton_compte" value={set.instagram_url || ''} onChange={(e) => up('instagram_url', e.target.value)} />
             </label>
             <label>Lien de réservation Cal.com
               <input value={set.cal_url} onChange={(e) => up('cal_url', e.target.value)} />
