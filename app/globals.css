@@ -44,3 +44,28 @@ input:focus { border-color: var(--g); outline: none; }
 .notice { margin-top: 16px; color: var(--gh); }
 :focus-visible { outline: 2px solid var(--gh); outline-offset: 2px; }
 @media (max-width: 420px) { .g3 { grid-template-columns: 1fr 1fr; } }
+
+/* --- v2 : onglets, compta, clients --- */
+.chips { display: flex; gap: 6px; margin: 14px 0 8px; flex-wrap: wrap; }
+.chips button { flex: 1; background: var(--p1); color: var(--mu); border: 1px solid var(--ln); border-radius: 999px; padding: 9px 12px; font: 500 .92rem var(--font-body), sans-serif; cursor: pointer; white-space: nowrap; }
+.chips button.on { background: var(--g); color: var(--on); border-color: var(--g); }
+.tabs { margin-bottom: 0; }
+.nav { justify-content: center; gap: 18px; margin: 4px 0 12px; }
+.nav .lk { font-size: 1.6rem; text-decoration: none; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.big { font: 700 1.5rem/1.1 var(--font-display), sans-serif; color: var(--gh); margin: 2px 0 0; }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin-top: 8px; }
+.bars > div { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+.bars span { display: block; width: 100%; min-height: 2px; background: linear-gradient(var(--gh), var(--gl)); border-radius: 5px 5px 0 0; }
+.bars em { font-style: normal; font-size: .7rem; color: var(--mu); }
+.tb { width: 100%; border-collapse: collapse; }
+.tb td { padding: 10px 6px; border-bottom: 1px solid var(--ln); vertical-align: top; }
+.tb .amt { text-align: right; font-weight: 600; color: var(--gh); white-space: nowrap; }
+.block { display: block; }
+button.item.cl { width: 100%; text-align: left; color: var(--tx); font: inherit; cursor: pointer; }
+.msgbox { margin: 0; padding: 12px; background: var(--bg); border: 1px solid var(--ln); border-radius: 12px; font-size: .95rem; }
+.sum p { margin: 0; }
+.sum { gap: 6px; }
+textarea, select, input[type=date] { width: 100%; background: var(--bg); color: var(--gh); border: 1px solid var(--ln); border-radius: 12px; padding: 12px; font: 500 1rem var(--font-body), sans-serif; }
+textarea:focus, select:focus { border-color: var(--g); outline: none; }
+a.btn.sm { display: inline-block; text-decoration: none; }
