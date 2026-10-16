@@ -145,7 +145,7 @@ body.hasbg .pub .item { background: color-mix(in srgb, var(--p1) 55%, transparen
 @media (prefers-reduced-motion: reduce) { .hero h1.fx-pulse, .live h1.fx-pulse { animation: none; } }
 
 /* --- aperçu en direct dans les réglages --- */
-.live { position: sticky; top: 8px; z-index: 20; margin-top: 14px; border: 1px solid var(--ln); border-radius: 22px; overflow: hidden; background: var(--bg); color: var(--tx); isolation: isolate; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+.live { position: relative; z-index: 1; margin-top: 14px; border: 1px solid var(--ln); border-radius: 22px; overflow: hidden; background: var(--bg); color: var(--tx); isolation: isolate; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
 .live .bgm { position: absolute; z-index: 0; }
 .live-in { position: relative; z-index: 1; padding: 18px 16px 16px; text-align: center; }
 .live h1 { font-size: 2.6rem; margin: 6px 0 0; }
@@ -158,3 +158,6 @@ body.hasbg .pub .item { background: color-mix(in srgb, var(--p1) 55%, transparen
 /* onglets de l'admin : 5 sur une ligne sur téléphone */
 .chips.tabs { flex-wrap: nowrap; gap: 5px; }
 .chips.tabs button { padding: 11px 2px; font-size: .8rem; min-width: 0; }
+
+/* l'aperçu recalcule le dégradé avec ses propres couleurs (boutons, prix) */
+.live { --grad: linear-gradient(135deg, var(--gh), var(--g) 45%, var(--gl)); }

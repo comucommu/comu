@@ -131,8 +131,9 @@ export default function Reglages({ part = 'design' }) {
               {set.logo_mode !== 'none' && <div className="pole sm" aria-hidden="true" />}
               <h1 className={`fx-${set.title_effect || 'none'}`}>{set.shop_name || 'Ma barbershop'}</h1>
               <p className="mu">{set.tagline}</p>
-              <div className="item"><div><h2>Coupe classique</h2><p className="mu">30 min</p></div><span className="price">14 €</span></div>
-              <span className="btn sm" style={{ marginTop: 10, display: 'inline-block' }}>Réserver un créneau</span>
+              <div className="live-extra">
+                <span className="btn sm" style={{ marginTop: 10, display: 'inline-block' }}>Réserver un créneau</span>
+              </div>
             </div>
           </div>
           <p className="mu" style={{ textAlign: 'center', margin: '6px 0 0' }}>Aperçu en direct : rien n’est publié tant que tu n’as pas enregistré.</p>
