@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { themeVars } from '../lib/theme';
 import { FONTS, fontsHref, titleVars } from '../lib/fonts';
@@ -9,6 +9,7 @@ const num = (v) => Number(String(v).replace(',', '.')) || 0;
 export default function Reglages({ part = 'design' }) {
   const [rows, setRows] = useState([]);
   const [set, setSet] = useState(null);
+  const saved = useRef(null);
   const [msg, setMsg] = useState('');
 
   async function load() {
@@ -17,8 +18,19 @@ export default function Reglages({ part = 'design' }) {
     if (a.error || b.error) setMsg('Impossible de charger les données.');
     setRows(a.data || []);
     setSet(b.data);
+    saved.current = b.data;
   }
   useEffect(() => { load(); }, []);
+
+  // toute la page d'admin suit la couleur choisie en direct ; elle revient à la couleur enregistrée en quittant l'onglet
+  const applyTheme = (x) => {
+    const root = document.documentElement;
+    const vars = { ...themeVars(x), ...titleVars(x) };
+    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, String(v)));
+    ['--font-title', '--title-weight'].forEach((k) => { if (!(k in vars)) root.style.removeProperty(k); });
+  };
+  useEffect(() => { if (part === 'design' && set) applyTheme(set); }, [part, set]);
+  useEffect(() => () => { if (saved.current) applyTheme(saved.current); }, []);
   useEffect(() => {
     if (part !== 'design') return;
     // une requête par police : si un nom était refusé, seule cette police manquerait
@@ -72,6 +84,7 @@ export default function Reglages({ part = 'design' }) {
       title_effect: set.title_effect || 'none',
       title_font: set.title_font || '',
     }).eq('id', 1);
+    if (!error) saved.current = { ...set };
     setMsg(error ? 'Échec de l’enregistrement.' : 'Apparence enregistrée. Recharge le site pour la voir.');
   }
 
