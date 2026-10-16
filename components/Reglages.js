@@ -84,6 +84,7 @@ export default function Reglages({ part = 'design' }) {
       bg_dim: parseInt(set.bg_dim, 10) || 0,
       title_effect: set.title_effect || 'none',
       address: set.address || '', instagram_url: set.instagram_url || '',
+      tiktok_url: set.tiktok_url || '', facebook_url: set.facebook_url || '', youtube_url: set.youtube_url || '',
       title_font: set.title_font || '',
     }).eq('id', 1);
     if (!error) saved.current = { ...set };
@@ -225,11 +226,20 @@ export default function Reglages({ part = 'design' }) {
             <label>Voile sombre sur le fond : {set.bg_dim ?? 55} %
               <input type="range" min="0" max="90" value={set.bg_dim ?? 55} onChange={(e) => up('bg_dim', e.target.value)} />
             </label>
-            <label>Adresse du salon (affichée avec un bouton Itinéraire)
+            <label>Adresse du salon (affichée sur la page)
               <input placeholder="Ex : Rue Saint-Gilles 12, 4000 Liège" value={set.address || ''} onChange={(e) => up('address', e.target.value)} />
             </label>
             <label>Lien Instagram (facultatif)
               <input placeholder="https://instagram.com/ton_compte" value={set.instagram_url || ''} onChange={(e) => up('instagram_url', e.target.value)} />
+            </label>
+            <label>Lien TikTok (facultatif)
+              <input placeholder="https://tiktok.com/@ton_compte" value={set.tiktok_url || ''} onChange={(e) => up('tiktok_url', e.target.value)} />
+            </label>
+            <label>Lien Facebook (facultatif)
+              <input placeholder="https://facebook.com/ta_page" value={set.facebook_url || ''} onChange={(e) => up('facebook_url', e.target.value)} />
+            </label>
+            <label>Lien YouTube (facultatif)
+              <input placeholder="https://youtube.com/@ta_chaine" value={set.youtube_url || ''} onChange={(e) => up('youtube_url', e.target.value)} />
             </label>
             <label>Lien de réservation Cal.com
               <input value={set.cal_url} onChange={(e) => up('cal_url', e.target.value)} />

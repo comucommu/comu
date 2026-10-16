@@ -180,3 +180,6 @@ body.hasbg .place { -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(1
 .place .addr { flex: 1 1 100%; margin: 0; font-size: 1.02rem; }
 .pbtn { display: inline-block; padding: 11px 22px; border-radius: 999px; border: 1px solid var(--g); color: var(--gh); text-decoration: none; font-weight: 600; font-size: .95rem; }
 .pbtn:active { transform: scale(.97); }
+
+.soc { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--g); color: var(--gh); }
+.soc:active { transform: scale(.94); }
