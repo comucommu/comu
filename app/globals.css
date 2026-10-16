@@ -161,3 +161,8 @@ body.hasbg .pub .item { background: color-mix(in srgb, var(--p1) 55%, transparen
 
 /* l'aperçu recalcule le dégradé avec ses propres couleurs (boutons, prix) */
 .live { --grad: linear-gradient(135deg, var(--gh), var(--g) 45%, var(--gl)); }
+
+/* police choisie pour le nom */
+.hero h1, .live h1 { font-family: var(--font-title, var(--font-display)), sans-serif; font-weight: var(--title-weight, 700); font-synthesis: none; }
+.fontlist { max-height: 260px; overflow-y: auto; padding: 4px; border: 1px solid var(--ln); border-radius: 16px; background: var(--bg); }
+.fontlist button { font-size: 1.05rem; }

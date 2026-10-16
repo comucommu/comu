@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { themeVars } from '../lib/theme';
+import { FONTS, fontsHref, titleVars } from '../lib/fonts';
 
 const num = (v) => Number(String(v).replace(',', '.')) || 0;
 
@@ -18,6 +19,17 @@ export default function Reglages({ part = 'design' }) {
     setSet(b.data);
   }
   useEffect(() => { load(); }, []);
+  useEffect(() => {
+    if (part !== 'design') return;
+    // une requête par police : si un nom était refusé, seule cette police manquerait
+    const links = FONTS.map((f) => {
+      const l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = fontsHref([f]);
+      document.head.appendChild(l);
+      return l;
+    });
+    return () => links.forEach((l) => l.remove());
+  }, [part]);
 
   const edit = (id, f, v) => setRows((r) => r.map((x) => (x.id === id ? { ...x, [f]: v } : x)));
 
@@ -58,6 +70,7 @@ export default function Reglages({ part = 'design' }) {
       bg_image_url: set.bg_image_url || '', bg_video_url: set.bg_video_url || '',
       bg_dim: parseInt(set.bg_dim, 10) || 0,
       title_effect: set.title_effect || 'none',
+      title_font: set.title_font || '',
     }).eq('id', 1);
     setMsg(error ? 'Échec de l’enregistrement.' : 'Apparence enregistrée. Recharge le site pour la voir.');
   }
@@ -119,7 +132,7 @@ export default function Reglages({ part = 'design' }) {
       )}
       {part === 'design' && set && (
         <>
-          <div className="live" style={themeVars(set)} aria-label="Aperçu en direct">
+          <div className="live" style={{ ...themeVars(set), ...titleVars(set) }} aria-label="Aperçu en direct">
             {(set.bg_image_url || set.bg_video_url) && (
               <div className="bgm">
                 <div className={`bgimg${(set.bg_image_url || '').startsWith('preset:') ? ` preset-${set.bg_image_url.slice(7)}` : ''}`}
@@ -147,6 +160,16 @@ export default function Reglages({ part = 'design' }) {
               <div className="chips fxchips" style={{ margin: 0 }}>
                 {[['none', 'Aucun'], ['glow', 'Glow'], ['neon', 'Néon'], ['degrade', 'Dégradé'], ['contour', 'Contour'], ['ombre', 'Ombre'], ['pulse', 'Pulsation']].map(([k, l]) => (
                   <button type="button" key={k} className={(set.title_effect || 'none') === k ? 'on' : ''} onClick={() => up('title_effect', k)}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="mu" style={{ margin: '0 0 6px' }}>Police du nom</p>
+              <div className="chips fxchips fontlist" style={{ margin: 0 }}>
+                <button type="button" className={!set.title_font ? 'on' : ''} onClick={() => up('title_font', '')}>Classique</button>
+                {FONTS.map((f) => (
+                  <button type="button" key={f.id} className={set.title_font === f.id ? 'on' : ''}
+                    style={{ fontFamily: `'${f.id}', sans-serif`, fontWeight: f.weight }} onClick={() => up('title_font', f.id)}>{f.id}</button>
                 ))}
               </div>
             </div>

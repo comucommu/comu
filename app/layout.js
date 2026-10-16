@@ -2,6 +2,7 @@ import { Barlow, Barlow_Condensed } from 'next/font/google';
 import './globals.css';
 import { supabase } from '../lib/supabase';
 import { themeVars } from '../lib/theme';
+import { titleVars, chosenFont, fontsHref } from '../lib/fonts';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,16 @@ export default async function RootLayout({ children }) {
   const preset = img.startsWith('preset:') ? img.slice(7) : '';
   const hasBg = !!(img || data?.bg_video_url);
   return (
-    <html lang="fr" style={themeVars(data)}>
+    <html lang="fr" style={{ ...themeVars(data), ...titleVars(data) }}>
+      <head>
+        {chosenFont(data) && (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+            <link rel="stylesheet" href={fontsHref([chosenFont(data)])} />
+          </>
+        )}
+      </head>
       <body className={`${body.variable} ${display.variable}${hasBg ? ' hasbg' : ''}`}>
         {hasBg && (
           <div className="bgm" aria-hidden="true">
