@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { themeVars } from '../lib/theme';
 
 const num = (v) => Number(String(v).replace(',', '.')) || 0;
 
@@ -56,6 +57,7 @@ export default function Reglages({ part = 'design' }) {
       cal_url: set.cal_url,
       bg_image_url: set.bg_image_url || '', bg_video_url: set.bg_video_url || '',
       bg_dim: parseInt(set.bg_dim, 10) || 0,
+      title_effect: set.title_effect || 'none',
     }).eq('id', 1);
     setMsg(error ? 'Échec de l’enregistrement.' : 'Apparence enregistrée. Recharge le site pour la voir.');
   }
@@ -117,11 +119,36 @@ export default function Reglages({ part = 'design' }) {
       )}
       {part === 'design' && set && (
         <>
+          <div className="live" style={themeVars(set)} aria-label="Aperçu en direct">
+            {(set.bg_image_url || set.bg_video_url) && (
+              <div className="bgm">
+                <div className={`bgimg${(set.bg_image_url || '').startsWith('preset:') ? ` preset-${set.bg_image_url.slice(7)}` : ''}`}
+                  style={set.bg_image_url && !set.bg_image_url.startsWith('preset:') ? { backgroundImage: `url(${set.bg_image_url})` } : undefined} />
+                <div className="bgdim" style={{ opacity: (set.bg_dim ?? 55) / 100 }} />
+              </div>
+            )}
+            <div className="live-in">
+              {set.logo_mode !== 'none' && <div className="pole sm" aria-hidden="true" />}
+              <h1 className={`fx-${set.title_effect || 'none'}`}>{set.shop_name || 'Ma barbershop'}</h1>
+              <p className="mu">{set.tagline}</p>
+              <div className="item"><div><h2>Coupe classique</h2><p className="mu">30 min</p></div><span className="price">14 €</span></div>
+              <span className="btn sm" style={{ marginTop: 10, display: 'inline-block' }}>Réserver un créneau</span>
+            </div>
+          </div>
+          <p className="mu" style={{ textAlign: 'center', margin: '6px 0 0' }}>Aperçu en direct : rien n’est publié tant que tu n’as pas enregistré.</p>
           <h3>Design et réglages</h3>
           <section className="card">
             <label>Nom de la barbershop
               <input value={set.shop_name} onChange={(e) => up('shop_name', e.target.value)} />
             </label>
+            <div>
+              <p className="mu" style={{ margin: '0 0 6px' }}>Effet sur le nom</p>
+              <div className="chips fxchips" style={{ margin: 0 }}>
+                {[['none', 'Aucun'], ['glow', 'Glow'], ['neon', 'Néon'], ['degrade', 'Dégradé'], ['contour', 'Contour'], ['ombre', 'Ombre'], ['pulse', 'Pulsation']].map(([k, l]) => (
+                  <button type="button" key={k} className={(set.title_effect || 'none') === k ? 'on' : ''} onClick={() => up('title_effect', k)}>{l}</button>
+                ))}
+              </div>
+            </div>
             <label>Phrase d’accueil
               <input value={set.tagline} onChange={(e) => up('tagline', e.target.value)} />
             </label>

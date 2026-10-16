@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="hero">
         {set?.logo_mode !== 'none' && <div className="pole" aria-hidden="true" />}
         <div>
-          <h1>{set?.shop_name || 'Ma barbershop'}</h1>
+          <h1 className={`fx-${set?.title_effect || 'none'}`}>{set?.shop_name || 'Ma barbershop'}</h1>
           <p className="mu">{set?.tagline}</p>
         </div>
       </div>
