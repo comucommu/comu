@@ -65,7 +65,7 @@ export default function Compta() {
         </div>
         <div className="bars" aria-hidden="true">
           {sums.map((s, i) => (
-            <div key={i}><span style={{ height: `${(s / max) * 100}%` }} /><em>{r.bars[i]}</em></div>
+            <div key={i}>{s > 0 && <b>{euro(s)}</b>}<span style={{ height: `${(s / max) * 82}%` }} /><em>{r.bars[i]}</em></div>
           ))}
         </div>
       </section>

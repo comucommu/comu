@@ -7,10 +7,10 @@ import { RELANCE_DAYS, daysSince, relanceMessage } from '../lib/relance';
 const num = (v) => Number(String(v).replace(',', '.')) || 0;
 const fr = (d) => (d ? `${d.slice(8)}/${d.slice(5, 7)}/${d.slice(0, 4)}` : '—');
 
-export default function Clients() {
+export default function Clients({ initial = null }) {
   const [list, setList] = useState([]);
   const [q, setQ] = useState('');
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(initial);
   const [msg, setMsg] = useState('');
 
   const load = useCallback(async () => {
@@ -156,6 +156,16 @@ function Fiche({ c, back }) {
     back();
   }
 
+  const editTopics = (id, val) => setVisits((vs) => vs.map((x) => (x.id === id ? { ...x, topics: val } : x)));
+  async function saveTopics(x) {
+    const { error } = await supabase.from('visits').update({ topics: x.topics }).eq('id', x.id);
+    if (!error && x.topics.trim() && x.id === visits[0]?.id) {
+      await supabase.from('clients').update({ to_follow_up: x.topics.trim() }).eq('id', c.id);
+      setF((y) => ({ ...y, to_follow_up: x.topics.trim() }));
+    }
+    setMsg(error ? 'Échec de l’enregistrement.' : 'Conversation enregistrée.');
+  }
+
   const lastTopics = visits.find((x) => x.topics)?.topics;
 
   return (
@@ -224,8 +234,11 @@ function Fiche({ c, back }) {
             <strong>{fr(x.visit_date)} · {x.service_label || 'Visite'}</strong>
             <span>{Number(x.price_eur) ? euro(x.price_eur) : ''}</span>
           </div>
-          {x.topics && <p className="mu" style={{ margin: 0 }}>{x.topics}</p>}
-          <button className="lk danger" style={{ justifySelf: 'start' }} onClick={() => delVisit(x)}>Supprimer</button>
+          <textarea rows={2} placeholder="De quoi on a parlé…" value={x.topics} onChange={(e) => editTopics(x.id, e.target.value)} />
+          <div className="row">
+            <button className="btn sm" onClick={() => saveTopics(x)}>Enregistrer</button>
+            <button className="lk danger" onClick={() => delVisit(x)}>Supprimer</button>
+          </div>
         </section>
       ))}
       {msg && <p className="notice" role="status">{msg}</p>}

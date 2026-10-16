@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 
 const num = (v) => Number(String(v).replace(',', '.')) || 0;
 
-export default function Reglages() {
+export default function Reglages({ part = 'design' }) {
   const [rows, setRows] = useState([]);
   const [set, setSet] = useState(null);
   const [msg, setMsg] = useState('');
@@ -54,14 +54,34 @@ export default function Reglages() {
       color_main: set.color_main, color_bg: set.color_bg,
       logo_mode: set.logo_mode, show_powered_by: set.show_powered_by,
       cal_url: set.cal_url,
+      bg_image_url: set.bg_image_url || '', bg_video_url: set.bg_video_url || '',
+      bg_dim: parseInt(set.bg_dim, 10) || 0,
     }).eq('id', 1);
     setMsg(error ? 'Échec de l’enregistrement.' : 'Apparence enregistrée. Recharge le site pour la voir.');
   }
 
   const up = (f, v) => setSet((s) => ({ ...s, [f]: v }));
 
+  async function upload(e, kind) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    const max = kind === 'video' ? 10 : 6;
+    if (file.size > max * 1024 * 1024) { setMsg(`Fichier trop lourd (max ${max} Mo). Compresse-le d’abord.`); return; }
+    setMsg('Envoi en cours…');
+    const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    const path = `${kind}-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from('site').upload(path, file, { contentType: file.type, upsert: true });
+    if (error) { setMsg('Envoi impossible (étape 3 SQL lancée ?).'); return; }
+    const { data } = supabase.storage.from('site').getPublicUrl(path);
+    up(kind === 'video' ? 'bg_video_url' : 'bg_image_url', data.publicUrl);
+    setMsg('Fichier envoyé. Clique sur « Enregistrer l’apparence » pour l’appliquer.');
+  }
+
   return (
     <div>
+      {part === 'prix' && (
+        <>
       <h3>Mes prix</h3>
       {rows.map((r) => (
         <section className="card" key={r.id}>
@@ -93,9 +113,11 @@ export default function Reglages() {
       ))}
       <button className="btn gh" onClick={addRow}>Ajouter une prestation</button>
 
-      {set && (
+        </>
+      )}
+      {part === 'design' && set && (
         <>
-          <h3>Apparence et réglages</h3>
+          <h3>Design et réglages</h3>
           <section className="card">
             <label>Nom de la barbershop
               <input value={set.shop_name} onChange={(e) => up('shop_name', e.target.value)} />
@@ -114,6 +136,17 @@ export default function Reglages() {
             <label className="ck">Afficher l’enseigne de barber
               <input type="checkbox" checked={set.logo_mode !== 'none'}
                 onChange={(e) => up('logo_mode', e.target.checked ? 'base' : 'none')} />
+            </label>
+            <label>Photo de fond
+              <input type="file" accept="image/*" onChange={(e) => upload(e, 'image')} />
+            </label>
+            {set.bg_image_url && <button className="lk danger" onClick={() => up('bg_image_url', '')}>Retirer la photo</button>}
+            <label>Vidéo de fond (courte, muette, moins de 3 Mo idéalement)
+              <input type="file" accept="video/mp4,video/quicktime" onChange={(e) => upload(e, 'video')} />
+            </label>
+            {set.bg_video_url && <button className="lk danger" onClick={() => up('bg_video_url', '')}>Retirer la vidéo</button>}
+            <label>Voile sombre sur le fond : {set.bg_dim ?? 55} %
+              <input type="range" min="0" max="90" value={set.bg_dim ?? 55} onChange={(e) => up('bg_dim', e.target.value)} />
             </label>
             <label>Lien de réservation Cal.com
               <input value={set.cal_url} onChange={(e) => up('cal_url', e.target.value)} />

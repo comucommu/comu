@@ -20,9 +20,22 @@ export const viewport = { themeColor: '#000000', width: 'device-width', initialS
 
 export default async function RootLayout({ children }) {
   const { data } = await supabase.from('settings').select('*').eq('id', 1).maybeSingle();
+  const hasBg = !!(data?.bg_image_url || data?.bg_video_url);
   return (
     <html lang="fr" style={themeVars(data)}>
-      <body className={`${body.variable} ${display.variable}`}>{children}</body>
+      <body className={`${body.variable} ${display.variable}${hasBg ? ' hasbg' : ''}`}>
+        {hasBg && (
+          <div className="bgm" aria-hidden="true">
+            {data.bg_video_url ? (
+              <video src={data.bg_video_url} poster={data.bg_image_url || undefined} autoPlay muted loop playsInline preload="auto" />
+            ) : (
+              <div className="bgimg" style={{ backgroundImage: `url(${data.bg_image_url})` }} />
+            )}
+            <div className="bgdim" style={{ opacity: (data.bg_dim ?? 55) / 100 }} />
+          </div>
+        )}
+        {children}
+      </body>
     </html>
   );
 }

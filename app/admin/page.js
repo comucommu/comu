@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import Agenda from '../../components/Agenda';
 import Clients from '../../components/Clients';
 import Compta from '../../components/Compta';
 import Reglages from '../../components/Reglages';
@@ -52,8 +53,9 @@ function Login() {
 }
 
 function Panel() {
-  const [tab, setTab] = useState('clients');
-  const tabs = [['clients', 'Clients'], ['compta', 'Compta'], ['reglages', 'Prix et site']];
+  const [tab, setTab] = useState('agenda');
+  const [target, setTarget] = useState(null);
+  const tabs = [['agenda', 'Agenda'], ['clients', 'Clients'], ['compta', 'Compta'], ['prix', 'Prix'], ['reglages', 'Réglages']];
   return (
     <main className="wrap">
       <header className="bar">
@@ -62,12 +64,14 @@ function Panel() {
       </header>
       <div className="chips tabs">
         {tabs.map(([k, l]) => (
-          <button key={k} className={k === tab ? 'on' : ''} onClick={() => setTab(k)}>{l}</button>
+          <button key={k} className={k === tab ? 'on' : ''} onClick={() => { setTarget(null); setTab(k); }}>{l}</button>
         ))}
       </div>
-      {tab === 'clients' && <Clients />}
+      {tab === 'agenda' && <Agenda goClient={(id) => { setTarget(id); setTab('clients'); }} />}
+      {tab === 'clients' && <Clients key={target || 'liste'} initial={target} />}
       {tab === 'compta' && <Compta />}
-      {tab === 'reglages' && <Reglages />}
+      {tab === 'prix' && <Reglages part="prix" />}
+      {tab === 'reglages' && <Reglages part="design" />}
     </main>
   );
 }
