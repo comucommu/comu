@@ -8,7 +8,7 @@ export default async function Home() {
     .from('services').select('*').eq('active', true).order('position');
 
   return (
-    <main className="wrap">
+    <main className="wrap pub">
       <div className="hero">
         {set?.logo_mode !== 'none' && <div className="pole" aria-hidden="true" />}
         <div>
@@ -31,10 +31,12 @@ export default async function Home() {
         </div>
       ))}
 
-      {set?.cal_url && (
-        <a className="btn" href={set.cal_url}>Réserver un créneau</a>
-      )}
       {set?.show_powered_by !== false && <p className="pw">Propulsé par <b>comu</b></p>}
+      {set?.cal_url && (
+        <div className="stick">
+          <a className="btn" href={set.cal_url}>Réserver un créneau</a>
+        </div>
+      )}
     </main>
   );
 }

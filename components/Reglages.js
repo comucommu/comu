@@ -137,10 +137,18 @@ export default function Reglages({ part = 'design' }) {
               <input type="checkbox" checked={set.logo_mode !== 'none'}
                 onChange={(e) => up('logo_mode', e.target.checked ? 'base' : 'none')} />
             </label>
-            <label>Photo de fond
+            <div>
+              <p className="mu" style={{ margin: '0 0 6px' }}>Fond du site (sans photo)</p>
+              <div className="chips" style={{ margin: 0 }}>
+                <button type="button" className={set.bg_image_url === 'preset:chaud' ? 'on' : ''} onClick={() => up('bg_image_url', 'preset:chaud')}>Décor sombre chaud</button>
+                <button type="button" className={set.bg_image_url === 'preset:couleur' ? 'on' : ''} onClick={() => up('bg_image_url', 'preset:couleur')}>Aux couleurs du site</button>
+                <button type="button" className={!set.bg_image_url ? 'on' : ''} onClick={() => up('bg_image_url', '')}>Aucun</button>
+              </div>
+            </div>
+            <label>Ou envoie ta propre photo de fond
               <input type="file" accept="image/*" onChange={(e) => upload(e, 'image')} />
             </label>
-            {set.bg_image_url && <button className="lk danger" onClick={() => up('bg_image_url', '')}>Retirer la photo</button>}
+            {set.bg_image_url && !set.bg_image_url.startsWith('preset:') && <button className="lk danger" onClick={() => up('bg_image_url', '')}>Retirer la photo</button>}
             <label>Vidéo de fond (courte, muette, moins de 3 Mo idéalement)
               <input type="file" accept="video/mp4,video/quicktime" onChange={(e) => upload(e, 'video')} />
             </label>

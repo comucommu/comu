@@ -20,16 +20,18 @@ export const viewport = { themeColor: '#000000', width: 'device-width', initialS
 
 export default async function RootLayout({ children }) {
   const { data } = await supabase.from('settings').select('*').eq('id', 1).maybeSingle();
-  const hasBg = !!(data?.bg_image_url || data?.bg_video_url);
+  const img = data?.bg_image_url || '';
+  const preset = img.startsWith('preset:') ? img.slice(7) : '';
+  const hasBg = !!(img || data?.bg_video_url);
   return (
     <html lang="fr" style={themeVars(data)}>
       <body className={`${body.variable} ${display.variable}${hasBg ? ' hasbg' : ''}`}>
         {hasBg && (
           <div className="bgm" aria-hidden="true">
             {data.bg_video_url ? (
-              <video src={data.bg_video_url} poster={data.bg_image_url || undefined} autoPlay muted loop playsInline preload="auto" />
+              <video src={data.bg_video_url} poster={img && !preset ? img : undefined} autoPlay muted loop playsInline preload="auto" />
             ) : (
-              <div className="bgimg" style={{ backgroundImage: `url(${data.bg_image_url})` }} />
+              <div className={`bgimg${preset ? ` preset-${preset}` : ''}`} style={preset ? undefined : { backgroundImage: `url(${img})` }} />
             )}
             <div className="bgdim" style={{ opacity: (data.bg_dim ?? 55) / 100 }} />
           </div>
